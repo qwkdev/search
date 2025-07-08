@@ -33,7 +33,35 @@
 <body>
 	<p id="logo"><b>Q</b>Search</p>
 
+	<script src="https://cdn.jsdelivr.net/npm/fuse.js@7"></script>
 	<script>
+		function fzf(list, query, html=false) {
+			const fuze = new Fuse(list, { includeScore: false, threshold: 0.7, includeMatches: html });
+			const results = fuze.search(query);
+			if (html) {
+				let resp = [];
+				results.forEach(ele => {
+					let result = ele.item;
+					let offset = 0;
+
+					ele.matches[0]?.indices[0].forEach((i, index) => {
+						if (index % 2 === 0) {
+							result = result.slice(0, i+offset) + `<b>${result.slice(i+offset)}`;
+							offset += 3;
+						} else {
+							result = result.slice(0, i+offset+1) + `</b>${result.slice(i+offset+1)}`;
+							offset += 4;
+						}
+					})
+
+					resp.push(result);
+				})
+				return resp;
+			} else {
+				return results.map(r => r.item);
+			}
+		}
+
 		function mapKeys(obj, func) {
 			if (Array.isArray(obj)) {
 				return obj.map(item => mapKeys(item, func));
@@ -49,33 +77,70 @@
 		}
 
 		let tree = {};
-		function init(urls) {
+		async function init(urls) {
 			let modules = [];
-			urls.forEach(url => {
-				fetch(url)
+			for (const url of urls) {
+				await fetch(url)
 					.then(response => response.text())
-					.then(module => JSON.parse(modules.push(module)))
+					.then(module => modules.push(JSON.parse(module)))
 					.catch(error => console.error(`Error loading module ${url}:`, error));
-			});
+			}
 
+			modules = modules.map(m => mapKeys(m, (k => k === '*' ? k : k.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, ''))));
 			modules.reverse();
-			modules = modules.map(m => { mapKeys(m, k => k === '*' ? k : k.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '') ) });
 
 			tree = Object.assign({}, ...modules);
 		}
 
 		function suggest(query) {
-			if (!query) return [];
-
-			query = query.toLowerCase().split(' ');
+			query = query.toLowerCase().split(' ').filter(i => i !== '');
 			let curTree = tree;
 			for (let i = 0; i < query.length; i++) {
 				if (Object.hasOwn(curTree, query[i])) {
 					curTree = curTree[query[i]];
 				} else {
-					return Object.keys(curTree).map(i => i === '' ? '[enter]' : i);
+					return [true, ...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), ...fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true), ...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])];
 				}
 			}
+
+			return [false, ...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), ...(Object.keys(curTree).filter(i => i !== '' && i !== '*')), ...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])];
+		}
+
+		function resolve(query) {
+			query = query.toLowerCase().split(' ').filter(i => i !== '');
+			let curTree = tree;
+			let url;
+
+			let i = 0;
+			for (i; i < query.length; i++) {
+				if (Object.hasOwn(curTree, query[i])) {
+					curTree = curTree[query[i]];
+				} else {
+					if (Object.hasOwn(curTree, '*')) {
+						url = curTree['*'];
+					}
+					break;
+				}
+			}
+			if (!url) {
+				if (typeof curTree === 'string') {
+					url = curTree
+				} else if (Object.hasOwn(curTree, '')) {
+					url = curTree[''];
+				}
+			}
+			if (!url) return null;
+
+			console.log(url);
+			for (let j = 0; j < query.length; j++) {
+				url = url.replace('$'+j, encodeURIComponent(query[j]));
+				url = url.replace('$.'+j, query[j]);
+			}
+			console.log(url);
+			url = url.replace('$*', encodeURIComponent(query.slice(i).join(' ')));
+			console.log(url);
+			url = url.replace('$.*', query.slice(i).join(' '));
+			return url;
 		}
 	</script>
 </body>

@@ -1,6 +1,6 @@
 {
 	"yt": {
-		"search": "https://youtube.com/results?search_query=$*",
+		"search": "https://youtube.com/results?search_query=$.*",
 		"channel": {
 			"me": "https://youtube.com/@qwkq",
 			"*": "https://youtube.com/@$*",
