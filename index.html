@@ -35,8 +35,17 @@
 
 	<script>
 		function init(urls) {
-			const x = urls.forEach(url => url);
-			console.log(x);
+			let modules = [];
+			urls.forEach(url => {
+				fetch(url)
+					.then(response => response.text())
+					.then(module => JSON.parse(modules.push(module)))
+					.catch(error => console.error(`Error loading module ${url}:`, error));
+			});
+
+			modules.reverse();
+			const tree = Object.assign({}, ...modules);
+
 		}
 	</script>
 </body>
