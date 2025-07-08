@@ -12,13 +12,15 @@
 		}
 		#logo {
 			--margin: .5vh;
-			position: absolute;
-			top: var(--margin);
-			left: var(--margin);
 
 			font-family: monospace;
 			font-size: 2.5vh;
 			color: #fff;
+
+			margin: 0;
+			position: absolute;
+			top: var(--margin);
+			left: var(--margin);
 
 			b {
 				color: #00f;
@@ -30,5 +32,11 @@
 	<p id="logo"><b>Q</b>Search</p>
 
 	<h1>Hello World</h1>
+
+	<script>
+		function init() {
+			console.log("QSearch initialized");
+		}
+	</script>
 </body>
 </html>
