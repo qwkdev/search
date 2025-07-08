@@ -3,14 +3,18 @@
 ```
 {
 	"yt": {
-		"search": "https://youtube.com/results?search_query=$2"
+		"search": "https://youtube.com/results?search_query=$*",
 		"channel": {
-			"me": "https://youtube.com/@qwkq"
-			"*": "https://youtube.com/@$2"
+			"me": "https://youtube.com/@qwkq",
+			"*": "https://youtube.com/@$*",
 			"": "https://youtube.com/@qwkq"
-		}
-		"*": "https://youtube.com"
+		},
+		"*": "https://youtube.com",
 		"": "https://youtube.com"
+	},
+	"g": {
+		"*": "https://www.google.com/search?q=$*",
+		"": "https://www.google.com"
 	}
 }
 ```
