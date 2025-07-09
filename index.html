@@ -9,6 +9,8 @@
 		body {
 			margin: 0;
 			background: #000;
+
+			overflow: hidden;
 		}
 		#logo {
 			user-select: none;
@@ -65,7 +67,6 @@
 
 		#search:focus ~ #results {
 			top: 13vh;
-			opacity: 1;
 		}
 
 		#results {
@@ -75,11 +76,14 @@
 			transform: translateX(-50%);
 
 			width: calc(90vw - 3.5vh);
+			max-height: 81.5vh;
+			overflow-y: scroll;
 
 			background: #141415;
 			border-radius: 2vh;
 
 			opacity: 0;
+			display: none;
 
 			transition: .5s;
 		}
@@ -103,6 +107,12 @@
 		#results p.selected {
 			background: #333335;
 		}
+		#results p:hover {
+			background: #222224;
+		}
+		#results p.selected:hover {
+			background: #444446;
+		}
 		#results p::selection, p b::selection {
 			background: #cccccc55;
 		}
@@ -121,6 +131,8 @@
 			font-family: monospace;
 			font-size: 1.5vh;
 			color: #555;
+
+			user-select: none;
 		}
 		.underlined {
 			color: #555;
@@ -164,7 +176,7 @@
 	</style>
 </head>
 <body>
-	<p id="logo"><b>Q</b>Search <span id="version">v1.0</span></p>
+	<p id="logo"><b>Q</b>Search <span id="version">v1.2</span></p>
 	<p id="credits">Made by <span><a class="underlined" href="https://qwkdev.github.io/" target="_blank" aria-label="label">qwk<span class="underline" style="--widen: 5%; --fix: 1%;"></span></a></span></p>
 
 	<input type="text" id="search" placeholder="Search...">
@@ -283,6 +295,28 @@
 
 		const search = document.getElementById('search');
 		const results = document.getElementById('results');
+
+		function noclick(e) {
+			e.preventDefault();
+		}
+		function complete(p) {
+			search.value = p.innerText + ' ';
+			update();
+		}
+
+		search.addEventListener('focus', (event) => {
+			results.style.display = 'block';
+			setTimeout(() => results.style.opacity = '1', 50);
+		}, true);
+		search.addEventListener('blur', (event) => {
+			const ae = document.activeElement;
+			console.log(ae, results.contains(ae), ae.tagName);
+			if (!(results.contains(ae) && ae.tagName === 'P')) {
+				results.style.opacity = '0';
+				setTimeout(() => results.style.display = 'none', 500);
+			}
+		}, true);
+
 		function update() {
 			sel = null;
 			suggestions = suggest(search.value || '');
@@ -290,7 +324,7 @@
 			if (suggestions[0]) {
 				prefix = prefix.split(' ').slice(0, -1).join(' ');
 			}
-			results.innerHTML = suggestions.filter(s => typeof s !== 'boolean').map(s => `<p>${prefix}${prefix ? ' ' : ''}${s}</p>`).join('');
+			results.innerHTML = suggestions.filter(s => typeof s !== 'boolean').map(s => `<p${s.endsWith(']') ? '' : ' onmousedown="noclick(event)" onclick="complete(this)"'}>${prefix}${prefix ? ' ' : ''}${s}</p>`).join('');
 		}
 		search.addEventListener('input', event => update());
 		search.addEventListener('onclick', event => update());
@@ -299,11 +333,7 @@
 			if (event.key === 'Enter') {
 				if (sel !== null) {
 					const r = Array.from(results.querySelectorAll('p')).filter(p => !p.innerText.endsWith(']'));
-
-					if (r[sel]) {
-						search.value = r[sel].innerText + ' ';
-						update();
-					}
+					if (r[sel]) complete(r[sel]);
 				} else {
 					let url = resolve(search.value);
 					if (url) window.location.href = url;

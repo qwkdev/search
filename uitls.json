@@ -1,0 +1,51 @@
+{
+	"google": {
+		"": "https://www.google.com/",
+		"*": "https://www.google.com/search?q=$*",
+		"search": "https://www.google.com/search?q=$*",
+		"image": "https://www.google.com/search?tbm=isch&q=$*",
+		"maps": "https://www.google.com/maps/search/?api=1&query=$*"
+	},
+	"youtube": {
+		"": "https://www.youtube.com/",
+		"*": "https://www.youtube.com/results?search_query=$*",
+		"search": "https://www.youtube.com/results?search_query=$*",
+		"video": "https://www.youtube.com/results?search_query=$*",
+		"channel": "https://www.youtube.com/channel/@$*",
+		"playlist": "https://www.youtube.com/playlist?list=$*"
+	},
+	"facebook": {},
+	"instagram": {},
+	"twitter": {},
+	"reddit": {},
+	"tiktok": {},
+	"twitch": {},
+	"pinterest": {},
+
+	"duckduckgo": {},
+	"wikipedia": {},
+	"quora": {},
+	
+	"github": {},
+	"gitlab": {},
+	"stackoverflow": {},
+	"chatgpt": "https://chatgpt.com/",
+
+	"discord": {},
+	"steam": {},
+	"roblox": {},
+
+	"netflix": {},
+	"disney": {},
+	"prime": {},
+	"spotify": {},
+	"soundcloud": {},
+
+	"amazon": {},
+	"amazonus": {},
+	"ebay": {},
+	"aliexpress": {},
+	
+	"weather": {},
+	"imdb": {}
+}
