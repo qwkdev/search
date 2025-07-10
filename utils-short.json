@@ -1,0 +1,82 @@
+{
+	"g": {
+		"": "https://www.google.com/",
+		"*": "https://www.google.com/search?q=$*",
+		"search": "https://www.google.com/search?q=$*",
+		"images": "https://www.google.com/search?tbm=isch&q=$*",
+		"maps": "https://www.google.com/maps/search/?api=1&query=$*"
+	},
+	"yt": {
+		"": "https://www.youtube.com/",
+		"*": "https://www.youtube.com/results?search_query=$*",
+		"search": "https://www.youtube.com/results?search_query=$*",
+		"video": "https://www.youtube.com/results?search_query=$*",
+		"channel": "https://www.youtube.com/channel/@$*",
+		"playlist": "https://www.youtube.com/playlist?list=$*"
+	},
+	"fb": {
+		"": "https://www.facebook.com/",
+		"*": "https://www.facebook.com/search/top/?q=$*",
+		"search": "https://www.facebook.com/search/top/?q=$*",
+		"page": "https://www.facebook.com/$*",
+		"profile": "https://www.facebook.com/$*"
+	},
+	"ig": {
+		"": "https://www.instagram.com/",
+		"*": "https://www.instagram.com/explore/search/keyword/?q=$*",
+		"search": "https://www.instagram.com/explore/search/keyword/?q=$*",
+		"explore": "https://www.instagram.com/explore/",
+		"reels": "https://www.instagram.com/reels/",
+		"direct": "https://www.instagram.com/direct/inbox/",
+		"messages": "https://www.instagram.com/direct/inbox/",
+		"profile": "https://www.instagram.com/$*"
+	},
+	"r": {
+		"": "https://www.reddit.com/",
+		"*": "https://www.reddit.com/search/?q=$*",
+		"search": "https://www.reddit.com/search/?q=$*",
+		"subreddit": {
+			"*": "https://www.reddit.com/r/$*",
+			"search": "https://www.reddit.com/r/$3/search?q=$*"
+		},
+		"popular": "https://www.reddit.com/r/popular/",
+		"user": "https://www.reddit.com/user/$*",
+		"profile": "https://www.reddit.com/user/$*"
+	},
+	"tt": {
+		"": "https://www.tiktok.com/",
+		"*": "https://www.tiktok.com/search?q=$*",
+		"search": "https://www.tiktok.com/search?q=$*",
+		"messages": "https://www.tiktok.com/messages",
+		"profile": "https://www.tiktok.com/@$*"
+	},
+	"ttv": {
+		"": "https://www.twitch.tv/",
+		"*": "https://www.twitch.tv/$*",
+		"search": "https://www.twitch.tv/search?term=$*",
+		"profile": "https://www.twitch.tv/$*"
+	},
+	"ddg": {
+		"": "https://duckduckgo.com/",
+		"*": "https://duckduckgo.com/?q=$*",
+		"search": "https://duckduckgo.com/?q=$*",
+		"images": "https://duckduckgo.com/?q=$*&ia=images&iax=images",
+		"videos": "https://duckduckgo.com/?q=$*&ia=videos&iax=videos",
+		"maps": "https://duckduckgo.com/?q=$*&iaxm=maps"
+	},
+	"gh": {
+		"": "https://github.com/",
+		"*": "https://github.com/search?q=$*&type=repositories",
+		"search": "https://github.com/search?q=$*&type=repositories",
+		"repo": "https://github.com/search?q=$*&type=repositories",
+		"profile": "https://github.com/$*",
+		"user": "https://github.com/$*",
+		"code": "https://github.com/search?q=$*&type=code",
+		"issues": "https://github.com/search?q=$*&type=issues",
+		"prs": "https://github.com/search?q=$*&type=pullrequests",
+		"discussions": "https://github.com/search?q=$*&type=discussions",
+		"users": "https://github.com/search?q=$*&type=users",
+		"commits": "https://github.com/search?q=$*&type=commits",
+		"wikis": "https://github.com/search?q=$*&type=wikis"
+	}
+}

@@ -3,8 +3,12 @@
 		"": "https://www.google.com/",
 		"*": "https://www.google.com/search?q=$*",
 		"search": "https://www.google.com/search?q=$*",
-		"image": "https://www.google.com/search?tbm=isch&q=$*",
+		"images": "https://www.google.com/search?tbm=isch&q=$*",
 		"maps": "https://www.google.com/maps/search/?api=1&query=$*"
+	},
+	"gmail": {
+		"": "https://mail.google.com/",
+		"*": "https://mail.google.com/mail/u/$*"
 	},
 	"youtube": {
 		"": "https://www.youtube.com/",
@@ -14,38 +18,224 @@
 		"channel": "https://www.youtube.com/channel/@$*",
 		"playlist": "https://www.youtube.com/playlist?list=$*"
 	},
-	"facebook": {},
-	"instagram": {},
-	"twitter": {},
-	"reddit": {},
-	"tiktok": {},
-	"twitch": {},
-	"pinterest": {},
-
-	"duckduckgo": {},
-	"wikipedia": {},
-	"quora": {},
-	
-	"github": {},
-	"gitlab": {},
-	"stackoverflow": {},
+	"facebook": {
+		"": "https://www.facebook.com/",
+		"*": "https://www.facebook.com/search/top/?q=$*",
+		"search": "https://www.facebook.com/search/top/?q=$*",
+		"page": "https://www.facebook.com/$*",
+		"profile": "https://www.facebook.com/$*"
+	},
+	"instagram": {
+		"": "https://www.instagram.com/",
+		"*": "https://www.instagram.com/explore/search/keyword/?q=$*",
+		"search": "https://www.instagram.com/explore/search/keyword/?q=$*",
+		"explore": "https://www.instagram.com/explore/",
+		"reels": "https://www.instagram.com/reels/",
+		"direct": "https://www.instagram.com/direct/inbox/",
+		"messages": "https://www.instagram.com/direct/inbox/",
+		"profile": "https://www.instagram.com/$*"
+	},
+	"twitter": {
+		"": "https://x.com/",
+		"*": "https://x.com/search?q=$*",
+		"search": "https://x.com/search?q=$*",
+		"notifications": "https://x.com/notifications",
+		"messages": "https://x.com/messages",
+		"grok": "https://x.com/i/grok",
+		"bookmarks": "https://x.com/i/bookmarks",
+		"communities": "https://x.com/i/communities",
+		"profile": "https://x.com/$*"
+	},
+	"x": {
+		"": "https://x.com/",
+		"*": "https://x.com/search?q=$*",
+		"search": "https://x.com/search?q=$*",
+		"notifications": "https://x.com/notifications",
+		"messages": "https://x.com/messages",
+		"grok": "https://x.com/i/grok",
+		"bookmarks": "https://x.com/i/bookmarks",
+		"communities": "https://x.com/i/communities",
+		"profile": "https://x.com/$*"
+	},
+	"reddit": {
+		"": "https://www.reddit.com/",
+		"*": "https://www.reddit.com/search/?q=$*",
+		"search": "https://www.reddit.com/search/?q=$*",
+		"subreddit": {
+			"*": "https://www.reddit.com/r/$*",
+			"search": "https://www.reddit.com/r/$3/search?q=$*"
+		},
+		"popular": "https://www.reddit.com/r/popular/",
+		"user": "https://www.reddit.com/user/$*",
+		"profile": "https://www.reddit.com/user/$*"
+	},
+	"tiktok": {
+		"": "https://www.tiktok.com/",
+		"*": "https://www.tiktok.com/search?q=$*",
+		"search": "https://www.tiktok.com/search?q=$*",
+		"messages": "https://www.tiktok.com/messages",
+		"profile": "https://www.tiktok.com/@$*"
+	},
+	"twitch": {
+		"": "https://www.twitch.tv/",
+		"*": "https://www.twitch.tv/$*",
+		"search": "https://www.twitch.tv/search?term=$*",
+		"profile": "https://www.twitch.tv/$*"
+	},
+	"pinterest": {
+		"": "https://pinterest.com/",
+		"*": "https://pinterest.com/search/pins/?q=$*",
+		"search": "https://pinterest.com/search/pins/?q=$*",
+		"pins": "https://pinterest.com/search/pins/?q=$*",
+		"today": "https://pinterest.com/today",
+		"explore": "https://pinterest.com/today"
+	},
+	"duckduckgo": {
+		"": "https://duckduckgo.com/",
+		"*": "https://duckduckgo.com/?q=$*",
+		"search": "https://duckduckgo.com/?q=$*",
+		"images": "https://duckduckgo.com/?q=$*&ia=images&iax=images",
+		"videos": "https://duckduckgo.com/?q=$*&ia=videos&iax=videos",
+		"maps": "https://duckduckgo.com/?q=$*&iaxm=maps"
+	},
+	"wikipedia": {
+		"": "https://www.wikipedia.org/",
+		"*": "https://en.wikipedia.org/wiki/Special:Search?search=$*",
+		"search": "https://en.wikipedia.org/wiki/Special:Search?search=$*",
+		"wiki": "https://en.wikipedia.org/wiki/$*",
+		"page": "https://en.wikipedia.org/wiki/$*"
+	},
+	"quora": {
+		"": "https://www.quora.com/",
+		"*": "https://www.quora.com/search?q=$*",
+		"search": "https://www.quora.com/search?q=$*",
+		"answer": "https://www.quora.com/answer"
+	},
+	"github": {
+		"": "https://github.com/",
+		"*": "https://github.com/search?q=$*&type=repositories",
+		"search": "https://github.com/search?q=$*&type=repositories",
+		"repo": "https://github.com/search?q=$*&type=repositories",
+		"profile": "https://github.com/$*",
+		"user": "https://github.com/$*",
+		"code": "https://github.com/search?q=$*&type=code",
+		"issues": "https://github.com/search?q=$*&type=issues",
+		"prs": "https://github.com/search?q=$*&type=pullrequests",
+		"discussions": "https://github.com/search?q=$*&type=discussions",
+		"users": "https://github.com/search?q=$*&type=users",
+		"commits": "https://github.com/search?q=$*&type=commits",
+		"wikis": "https://github.com/search?q=$*&type=wikis"
+	},
+	"gitlab": {
+		"": "https://gitlab.com/",
+		"*": "https://gitlab.com/explore/projects/?name=$*",
+		"search": "https://gitlab.com/explore/projects/?name=$*",
+		"trending": "https://gitlab.com/explore/trending",
+		"profile": "https://gitlab.com/$*",
+		"user": "https://gitlab.com/$*"
+	},
+	"stackoverflow": {
+		"": "https://stackoverflow.com/",
+		"*": "https://stackoverflow.com/search?q=$*",
+		"search": "https://stackoverflow.com/search?q=$*"
+	},
 	"chatgpt": "https://chatgpt.com/",
-
-	"discord": {},
-	"steam": {},
-	"roblox": {},
-
-	"netflix": {},
+	"discord": "https://discord.com/channels/@me",
+	"steam": {
+		"": "https://store.steampowered.com/",
+		"*": "https://store.steampowered.com/search/?term=$*",
+		"search": "https://store.steampowered.com/search/?term=$*",
+		"market": {
+			"": "https://steamcommunity.com/market/",
+			"*": "https://steamcommunity.com/market/search?q=$*",
+			"search": "https://steamcommunity.com/market/search?q=$*"
+		},
+		"workshop": "https://steamcommunity.com/workshop/",
+		"wishlist": "https://store.steampowered.com/wishlist",
+		"explore": "https://store.steampowered.com/explore/",
+		"discover": "https://store.steampowered.com/explore/",
+		"queue": "https://store.steampowered.com/explore/"
+	},
+	"roblox": {
+		"": "https://www.roblox.com/",
+		"*": "https://www.roblox.com/discover/?Keyword=$*",
+		"search": "https://www.roblox.com/discover/?Keyword=$*",
+		"games": "https://www.roblox.com/games/?Keyword=$*",
+		"users": "https://www.roblox.com/search/users?keyword=$*",
+		"market": "https://www.roblox.com/catalog?Keyword=$*"
+	},
+	"netflix": {
+		"": "https://www.netflix.com/",
+		"*": "https://www.netflix.com/search?q=$*",
+		"search": "https://www.netflix.com/search?q=$*"
+	},
 	"disney": {},
 	"prime": {},
-	"spotify": {},
-	"soundcloud": {},
-
-	"amazon": {},
-	"amazonus": {},
-	"ebay": {},
-	"aliexpress": {},
-	
-	"weather": {},
-	"imdb": {}
+	"spotify": {
+		"": "https://open.spotify.com/",
+		"*": "https://open.spotify.com/search/$*",
+		"search": "https://open.spotify.com/search/$*",
+		"likes": "https://open.spotify.com/collection/tracks"
+	},
+	"soundcloud": {
+		"": "https://soundcloud.com/",
+		"*": "https://soundcloud.com/search?q=$*",
+		"search": "https://soundcloud.com/search?q=$*",
+		"artist": "https://soundcloud.com/$*",
+		"track": "https://soundcloud.com/$2/$*",
+		"library": "https://soundcloud.com/you/library",
+		"likes": "https://soundcloud.com/you/likes",
+		"playlists": "https://soundcloud.com/you/sets"
+	},
+	"amazon": {
+		"": "https://www.amazon.co.uk/",
+		"*": "https://www.amazon.co.uk/s?k=$*",
+		"search": "https://www.amazon.co.uk/s?k=$*",
+		"basket": "https://www.amazon.co.uk/gp/cart/view.html",
+		"cart": "https://www.amazon.co.uk/gp/cart/view.html",
+		"orders": "https://www.amazon.co.uk/gp/css/order-history",
+		"wishlist": "https://www.amazon.co.uk/hz/wishlist/ls/"
+	},
+	"amazonus": {
+		"": "https://www.amazon.com/",
+		"*": "https://www.amazon.com/s?k=$*",
+		"search": "https://www.amazon.com/s?k=$*",
+		"basket": "https://www.amazon.com/gp/cart/view.html",
+		"cart": "https://www.amazon.com/gp/cart/view.html",
+		"orders": "https://www.amazon.com/gp/css/order-history",
+		"wishlist": "https://www.amazon.com/hz/wishlist/ls/"
+	},
+	"ebay": {
+		"": "https://www.ebay.co.uk/",
+		"*": "https://www.ebay.co.uk/sch/i.html?_nkw=$*",
+		"search": "https://www.ebay.co.uk/sch/i.html?_nkw=$*",
+		"watchlist": "https://www.ebay.co.uk/mye/myebay/watchlist"
+	},
+	"aliexpress": "https://www.aliexpress.com/",
+	"weather": {
+		"": "https://weather.com/",
+		"*": "https://weather.com/",
+		"bbc": "https://www.bbc.com/weather",
+		"met": "https://weather.metoffice.gov.uk/forecast/"
+	},
+	"imdb": {
+		"": "https://www.imdb.com/",
+		"*": "https://www.imdb.com/find/?q=$*",
+		"search": "https://www.imdb.com/find/?q=$*",
+		"watchlist": "https://www.imdb.com/list/watchlist/",
+		"ratings": "https://www.imdb.com/list/ratings/",
+		"lists": "https://www.imdb.com/list/lists/",
+		"history": "https://www.imdb.com/list/watchhistory/",
+		"top": "https://www.imdb.com/chart/top/",
+		"upcoming": "https://www.imdb.com/calendar/",
+		"popular": "https://www.imdb.com/chart/moviemeter/",
+		"genres": "https://www.imdb.com/interest/all/",
+		"tv": {
+			"": "https://www.imdb.com/whats-on-tv/",
+			"*": "https://www.imdb.com/find/?q=$*&s=tt&ttype=tv",
+			"search": "https://www.imdb.com/find/?q=$*&s=tt&ttype=tv",
+			"top": "https://www.imdb.com/chart/toptv/",
+			"popular": "https://www.imdb.com/chart/tvmeter/"
+		}
+	}
 }
