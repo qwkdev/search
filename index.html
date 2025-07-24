@@ -229,10 +229,12 @@
 		async function init(urls) {
 			let modules = [];
 			for (const url of urls) {
-				await fetch(url)
-					.then(response => response.text())
-					.then(module => modules.push(JSON.parse(module)))
-					.catch(error => console.error(`Error loading module ${url}:`, error));
+				if (typeof url === "string") {
+					await fetch(url)
+						.then(response => response.text())
+						.then(module => modules.push(JSON.parse(module)))
+						.catch(error => console.error(`Error loading module ${url}:`, error));
+				} else modules.push(url);
 			}
 
 			modules = modules.map(m => mapKeys(m, (k => k === '*' ? k : k.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, ''))));

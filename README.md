@@ -1,11 +1,17 @@
 # QSearch
 Fully customisable, ultra lightweight, fuzzy search util
-To use, create a userscript which calls `init()` and passes in an array of module urls.
+To use, create a userscript which calls `init()` and passes in an array of modules/module urls.
 
 EG:
 ```
 init([
-    "https://raw.githubusercontent.com/qwkdev/search/refs/heads/main/utils.json"
+    "https://raw.githubusercontent.com/qwkdev/search/refs/heads/main/utils.json",
+	{
+		"google": {
+			"": "https://www.google.com/",
+			"*": "https://www.google.com/search?q=$*"
+		}
+	}
 ]);
 ```
 
