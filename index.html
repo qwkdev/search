@@ -176,7 +176,7 @@
 	</style>
 </head>
 <body>
-	<p id="logo"><b>Q</b>Search <span id="version">v1.3</span></p>
+	<p id="logo"><b>Q</b>Search <span id="version">v1.4</span></p>
 	<p id="credits">Made by <span><a class="underlined" href="https://qwkdev.github.io/" target="_blank" aria-label="label">qwk<span class="underline" style="--widen: 5%; --fix: 1%;"></span></a></span></p>
 
 	<input type="text" id="search" placeholder="Search...">
@@ -248,11 +248,13 @@
 		function suggest(query) {
 			query = query.toLowerCase().split(' ').filter(i => i !== '');
 			let curTree = tree;
+			let curDepth = 0;
 			for (let i = 0; i < query.length; i++) {
 				if (Object.hasOwn(curTree, query[i])) {
 					curTree = curTree[query[i]];
+					curDepth += 1;
 				} else {
-					return [true, ...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), ...fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true), ...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])];
+					return [true, ...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), ...(query.length <= curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true) : []), ...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])];
 				}
 			}
 
