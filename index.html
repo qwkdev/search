@@ -182,7 +182,7 @@
 	<input type="text" id="search" placeholder="Search...">
 	<div id="results"></div>
 
-	<script src="https://cdn.jsdelivr.net/npm/fuse.js@7"></script>
+	<script src="https://cdn.jsdelivr.net/gh/qwkdev/search/fuse.js"></script>
 	<script>
 		function fzf(list, query, html=false) {
 			const fuze = new Fuse(list, { includeScore: false, threshold: 0.7, includeMatches: html });
@@ -257,13 +257,21 @@
 					return [
 						true,
 						...(Object.hasOwn(curTree, '') ? ['[enter]'] : []),
-						...(query.length <= curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true) : []), 
+						...(query.length > curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true) : []), 
 						...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])
+						,
+						query.length, curDepth,
+						
 					];
 				}
 			}
 
-			return [false, ...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), ...(typeof curTree === 'object' ? Object.keys(curTree).filter(i => i !== '' && i !== '*') : []), ...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])];
+			return [
+				false,
+				...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), 
+				...(typeof curTree === 'object' ? Object.keys(curTree).filter(i => i !== '' && i !== '*') : []),
+				...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])
+			];
 		}
 
 		function resolve(query) {
