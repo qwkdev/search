@@ -361,6 +361,24 @@
 				});
 			}
 		});
+
+		init([{
+			"g": {
+				"": "https://www.google.com/",
+				"*": "https://www.google.com/search?q=$*",
+				"search": "https://www.google.com/search?q=$*",
+				"images": "https://www.google.com/search?tbm=isch&q=$*",
+				"maps": "https://www.google.com/maps/search/?api=1&query=$*"
+			},
+			"yt": {
+				"": "https://www.youtube.com/",
+				"*": "https://www.youtube.com/results?search_query=$*",
+				"search": "https://www.youtube.com/results?search_query=$*",
+				"video": "https://www.youtube.com/results?search_query=$*",
+				"channel": "https://www.youtube.com/channel/@$*",
+				"playlist": "https://www.youtube.com/playlist?list=$*"
+			}
+		}]);
 	</script>
 </body>
 </html>
