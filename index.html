@@ -176,7 +176,7 @@
 	</style>
 </head>
 <body>
-	<p id="logo"><b>Q</b>Search <span id="version">v1.4</span></p>
+	<p id="logo"><b>Q</b>Search <span id="version">v1.7</span></p>
 	<p id="credits">Made by <span><a class="underlined" href="https://qwkdev.github.io/" target="_blank" aria-label="label">qwk<span class="underline" style="--widen: 5%; --fix: 1%;"></span></a></span></p>
 
 	<input type="text" id="search" placeholder="Search...">
@@ -187,28 +187,26 @@
 		function fzf(list, query, html=false) {
 			const fuze = new Fuse(list, { includeScore: false, threshold: 0.7, includeMatches: html });
 			const results = fuze.search(query);
-			if (html) {
-				let resp = [];
-				results.forEach(ele => {
-					let result = ele.item;
-					let offset = 0;
+			if (!html) return results.map(r => r.item);
 
-					ele.matches[0]?.indices[0].forEach((i, index) => {
-						if (index % 2 === 0) {
-							result = result.slice(0, i+offset) + `<b>${result.slice(i+offset)}`;
-							offset += 3;
-						} else {
-							result = result.slice(0, i+offset+1) + `</b>${result.slice(i+offset+1)}`;
-							offset += 4;
-						}
-					})
+			let resp = [];
+			results.forEach(ele => {
+				let result = ele.item;
+				let offset = 0;
 
-					resp.push(result);
+				ele.matches[0]?.indices[0].forEach((i, index) => {
+					if (index % 2 === 0) {
+						result = result.slice(0, i+offset) + `<b>${result.slice(i+offset)}`;
+						offset += 3;
+					} else {
+						result = result.slice(0, i+offset+1) + `</b>${result.slice(i+offset+1)}`;
+						offset += 4;
+					}
 				})
-				return resp;
-			} else {
-				return results.map(r => r.item);
-			}
+
+				resp.push(result);
+			})
+			return resp;
 		}
 
 		function mapKeys(obj, func) {
@@ -237,11 +235,20 @@
 				} else modules.push(url);
 			}
 
-			modules = modules.map(m => mapKeys(m, (k => k === '*' ? k : k.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, ''))));
+			modules = modules.map(m => mapKeys(m, (k => k === '*' ? k : k.toLowerCase().replace(/[^a-zA-Z0-9\/_-]/g, ''))));
 			modules.reverse();
 
-			tree = Object.assign({}, ...modules);
+			let allmodules = [];
+			modules.forEach(m => {
+				let temp = {}
+				for (const [k, v] of Object.entries(m)) {
+					if (k.includes('/')) k.split('/').forEach(key => temp[key] = v);
+					else temp[k] = v;
+				}
+				allmodules.push(temp);
+			})
 
+			tree = Object.assign(tree, ...allmodules);
 			update();
 		}
 
@@ -256,21 +263,16 @@
 				} else {
 					return [
 						true,
-						...(Object.hasOwn(curTree, '') ? ['[enter]'] : []),
-						...(query.length > curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true) : []), 
-						...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])
-						,
-						query.length, curDepth,
-						
+						...(query.length - 1 <= curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query[curDepth], true) : []), 
+						...(Object.hasOwn(curTree, '*') || typeof curTree !== 'object' ? [query.at(-1) + ' [*]'] : [])
 					];
 				}
 			}
 
 			return [
 				false,
-				...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), 
-				...(typeof curTree === 'object' ? Object.keys(curTree).filter(i => i !== '' && i !== '*') : []),
-				...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])
+				...(Object.hasOwn(curTree, '') || typeof curTree !== 'object' ? ['[enter]'] : []), 
+				...(typeof curTree === 'object' ? Object.keys(curTree).filter(i => i !== '' && i !== '*') : [])
 			];
 		}
 
@@ -281,21 +283,15 @@
 
 			let i = 0;
 			for (i; i < query.length; i++) {
-				if (Object.hasOwn(curTree, query[i])) {
-					curTree = curTree[query[i]];
-				} else {
-					if (Object.hasOwn(curTree, '*')) {
-						url = curTree['*'];
-					}
+				if (Object.hasOwn(curTree, query[i])) curTree = curTree[query[i]];
+				else {
+					if (Object.hasOwn(curTree, '*')) url = curTree['*'];
 					break;
 				}
 			}
 			if (!url) {
-				if (typeof curTree === 'string') {
-					url = curTree
-				} else if (Object.hasOwn(curTree, '')) {
-					url = curTree[''];
-				}
+				if (typeof curTree === 'string') url = curTree
+				else if (Object.hasOwn(curTree, '')) url = curTree[''];
 			}
 			if (!url) return null;
 
@@ -321,13 +317,12 @@
 			update();
 		}
 
-		search.addEventListener('focus', (event) => {
+		search.addEventListener('focus', e => {
 			results.style.display = 'block';
 			setTimeout(() => results.style.opacity = '1', 50);
 		}, true);
-		search.addEventListener('blur', (event) => {
+		search.addEventListener('blur', e => {
 			const ae = document.activeElement;
-			console.log(ae, results.contains(ae), ae.tagName);
 			if (!(results.contains(ae) && ae.tagName === 'P')) {
 				results.style.opacity = '0';
 				setTimeout(() => results.style.display = 'none', 500);
@@ -371,20 +366,233 @@
 		});
 
 		init([{
-			"g": {
+			"g/google": {
 				"": "https://www.google.com/",
 				"*": "https://www.google.com/search?q=$*",
 				"search": "https://www.google.com/search?q=$*",
 				"images": "https://www.google.com/search?tbm=isch&q=$*",
 				"maps": "https://www.google.com/maps/search/?api=1&query=$*"
 			},
-			"yt": {
+			"gmail": {
+				"": "https://mail.google.com/",
+				"*": "https://mail.google.com/mail/u/$*"
+			},
+			"yt/youtube": {
 				"": "https://www.youtube.com/",
 				"*": "https://www.youtube.com/results?search_query=$*",
 				"search": "https://www.youtube.com/results?search_query=$*",
 				"video": "https://www.youtube.com/results?search_query=$*",
 				"channel": "https://www.youtube.com/channel/@$*",
 				"playlist": "https://www.youtube.com/playlist?list=$*"
+			},
+			"fb/facebook": {
+				"": "https://www.facebook.com/",
+				"*": "https://www.facebook.com/search/top/?q=$*",
+				"search": "https://www.facebook.com/search/top/?q=$*",
+				"page": "https://www.facebook.com/$*",
+				"profile": "https://www.facebook.com/$*"
+			},
+			"ig/instagram": {
+				"": "https://www.instagram.com/",
+				"*": "https://www.instagram.com/explore/search/keyword/?q=$*",
+				"search": "https://www.instagram.com/explore/search/keyword/?q=$*",
+				"explore": "https://www.instagram.com/explore/",
+				"reels": "https://www.instagram.com/reels/",
+				"direct": "https://www.instagram.com/direct/inbox/",
+				"messages": "https://www.instagram.com/direct/inbox/",
+				"profile": "https://www.instagram.com/$*"
+			},
+			"x/twitter": {
+				"": "https://x.com/",
+				"*": "https://x.com/search?q=$*",
+				"search": "https://x.com/search?q=$*",
+				"notifications": "https://x.com/notifications",
+				"messages": "https://x.com/messages",
+				"grok": "https://x.com/i/grok",
+				"bookmarks": "https://x.com/i/bookmarks",
+				"communities": "https://x.com/i/communities",
+				"profile": "https://x.com/$*"
+			},
+			"r/reddit": {
+				"": "https://www.reddit.com/",
+				"*": "https://www.reddit.com/search/?q=$*",
+				"search": "https://www.reddit.com/search/?q=$*",
+				"subreddit": {
+					"*": "https://www.reddit.com/r/$*",
+					"search": "https://www.reddit.com/r/$3/search?q=$*"
+				},
+				"popular": "https://www.reddit.com/r/popular/",
+				"user": "https://www.reddit.com/user/$*",
+				"profile": "https://www.reddit.com/user/$*"
+			},
+			"tt/tiktok": {
+				"": "https://www.tiktok.com/",
+				"*": "https://www.tiktok.com/search?q=$*",
+				"search": "https://www.tiktok.com/search?q=$*",
+				"messages": "https://www.tiktok.com/messages",
+				"profile": "https://www.tiktok.com/@$*"
+			},
+			"ttv/twitch": {
+				"": "https://www.twitch.tv/",
+				"*": "https://www.twitch.tv/$*",
+				"search": "https://www.twitch.tv/search?term=$*",
+				"profile": "https://www.twitch.tv/$*"
+			},
+			"pinterest": {
+				"": "https://pinterest.com/",
+				"*": "https://pinterest.com/search/pins/?q=$*",
+				"search": "https://pinterest.com/search/pins/?q=$*",
+				"pins": "https://pinterest.com/search/pins/?q=$*",
+				"today": "https://pinterest.com/today",
+				"explore": "https://pinterest.com/today"
+			},
+			"ddg/duckduckgo": {
+				"": "https://duckduckgo.com/",
+				"*": "https://duckduckgo.com/?q=$*",
+				"search": "https://duckduckgo.com/?q=$*",
+				"images": "https://duckduckgo.com/?q=$*&ia=images&iax=images",
+				"videos": "https://duckduckgo.com/?q=$*&ia=videos&iax=videos",
+				"maps": "https://duckduckgo.com/?q=$*&iaxm=maps"
+			},
+			"wiki/wikipedia": {
+				"": "https://www.wikipedia.org/",
+				"*": "https://en.wikipedia.org/wiki/Special:Search?search=$*",
+				"search": "https://en.wikipedia.org/wiki/Special:Search?search=$*",
+				"wiki": "https://en.wikipedia.org/wiki/$*",
+				"page": "https://en.wikipedia.org/wiki/$*"
+			},
+			"quora": {
+				"": "https://www.quora.com/",
+				"*": "https://www.quora.com/search?q=$*",
+				"search": "https://www.quora.com/search?q=$*",
+				"answer": "https://www.quora.com/answer"
+			},
+			"gh/github": {
+				"": "https://github.com/",
+				"*": "https://github.com/search?q=$*&type=repositories",
+				"search": "https://github.com/search?q=$*&type=repositories",
+				"repo": "https://github.com/search?q=$*&type=repositories",
+				"profile": "https://github.com/$*",
+				"user": "https://github.com/$*",
+				"code": "https://github.com/search?q=$*&type=code",
+				"issues": "https://github.com/search?q=$*&type=issues",
+				"prs": "https://github.com/search?q=$*&type=pullrequests",
+				"discussions": "https://github.com/search?q=$*&type=discussions",
+				"users": "https://github.com/search?q=$*&type=users",
+				"commits": "https://github.com/search?q=$*&type=commits",
+				"wikis": "https://github.com/search?q=$*&type=wikis"
+			},
+			"gl/gitlab": {
+				"": "https://gitlab.com/",
+				"*": "https://gitlab.com/explore/projects/?name=$*",
+				"search": "https://gitlab.com/explore/projects/?name=$*",
+				"trending": "https://gitlab.com/explore/trending",
+				"profile": "https://gitlab.com/$*",
+				"user": "https://gitlab.com/$*"
+			},
+			"so/stackoverflow": {
+				"": "https://stackoverflow.com/",
+				"*": "https://stackoverflow.com/search?q=$*",
+				"search": "https://stackoverflow.com/search?q=$*"
+			},
+			"gpt/chatgpt": "https://chatgpt.com/",
+			"dc/discord": "https://discord.com/channels/@me",
+			"steam": {
+				"": "https://store.steampowered.com/",
+				"*": "https://store.steampowered.com/search/?term=$*",
+				"search": "https://store.steampowered.com/search/?term=$*",
+				"market": {
+					"": "https://steamcommunity.com/market/",
+					"*": "https://steamcommunity.com/market/search?q=$*",
+					"search": "https://steamcommunity.com/market/search?q=$*"
+				},
+				"workshop": "https://steamcommunity.com/workshop/",
+				"wishlist": "https://store.steampowered.com/wishlist",
+				"explore": "https://store.steampowered.com/explore/",
+				"discover": "https://store.steampowered.com/explore/",
+				"queue": "https://store.steampowered.com/explore/"
+			},
+			"roblox": {
+				"": "https://www.roblox.com/",
+				"*": "https://www.roblox.com/discover/?Keyword=$*",
+				"search": "https://www.roblox.com/discover/?Keyword=$*",
+				"games": "https://www.roblox.com/games/?Keyword=$*",
+				"users": "https://www.roblox.com/search/users?keyword=$*",
+				"market": "https://www.roblox.com/catalog?Keyword=$*"
+			},
+			"netflix": {
+				"": "https://www.netflix.com/",
+				"*": "https://www.netflix.com/search?q=$*",
+				"search": "https://www.netflix.com/search?q=$*"
+			},
+			"disney": {}, //! TODO
+			"prime": {}, //! TODO
+			"spotify": {
+				"": "https://open.spotify.com/",
+				"*": "https://open.spotify.com/search/$*",
+				"search": "https://open.spotify.com/search/$*",
+				"likes": "https://open.spotify.com/collection/tracks"
+			},
+			"soundcloud": {
+				"": "https://soundcloud.com/",
+				"*": "https://soundcloud.com/search?q=$*",
+				"search": "https://soundcloud.com/search?q=$*",
+				"artist": "https://soundcloud.com/$*",
+				"track": "https://soundcloud.com/$2/$*",
+				"library": "https://soundcloud.com/you/library",
+				"likes": "https://soundcloud.com/you/likes",
+				"playlists": "https://soundcloud.com/you/sets"
+			},
+			"amazon": {
+				"": "https://www.amazon.co.uk/",
+				"*": "https://www.amazon.co.uk/s?k=$*",
+				"search": "https://www.amazon.co.uk/s?k=$*",
+				"basket": "https://www.amazon.co.uk/gp/cart/view.html",
+				"cart": "https://www.amazon.co.uk/gp/cart/view.html",
+				"orders": "https://www.amazon.co.uk/gp/css/order-history",
+				"wishlist": "https://www.amazon.co.uk/hz/wishlist/ls/"
+			},
+			"amazonus": {
+				"": "https://www.amazon.com/",
+				"*": "https://www.amazon.com/s?k=$*",
+				"search": "https://www.amazon.com/s?k=$*",
+				"basket": "https://www.amazon.com/gp/cart/view.html",
+				"cart": "https://www.amazon.com/gp/cart/view.html",
+				"orders": "https://www.amazon.com/gp/css/order-history",
+				"wishlist": "https://www.amazon.com/hz/wishlist/ls/"
+			},
+			"ebay": {
+				"": "https://www.ebay.co.uk/",
+				"*": "https://www.ebay.co.uk/sch/i.html?_nkw=$*",
+				"search": "https://www.ebay.co.uk/sch/i.html?_nkw=$*",
+				"watchlist": "https://www.ebay.co.uk/mye/myebay/watchlist"
+			},
+			"aliexpress": "https://www.aliexpress.com/",
+			"weather": {
+				"": "https://weather.com/",
+				"*": "https://weather.com/",
+				"bbc": "https://www.bbc.com/weather",
+				"met": "https://weather.metoffice.gov.uk/forecast/"
+			},
+			"imdb": {
+				"": "https://www.imdb.com/",
+				"*": "https://www.imdb.com/find/?q=$*",
+				"search": "https://www.imdb.com/find/?q=$*",
+				"watchlist": "https://www.imdb.com/list/watchlist/",
+				"ratings": "https://www.imdb.com/list/ratings/",
+				"lists": "https://www.imdb.com/list/lists/",
+				"history": "https://www.imdb.com/list/watchhistory/",
+				"top": "https://www.imdb.com/chart/top/",
+				"upcoming": "https://www.imdb.com/calendar/",
+				"popular": "https://www.imdb.com/chart/moviemeter/",
+				"genres": "https://www.imdb.com/interest/all/",
+				"tv": {
+					"": "https://www.imdb.com/whats-on-tv/",
+					"*": "https://www.imdb.com/find/?q=$*&s=tt&ttype=tv",
+					"search": "https://www.imdb.com/find/?q=$*&s=tt&ttype=tv",
+					"top": "https://www.imdb.com/chart/toptv/",
+					"popular": "https://www.imdb.com/chart/tvmeter/"
+				}
 			}
 		}]);
 	</script>
