@@ -254,7 +254,12 @@
 					curTree = curTree[query[i]];
 					curDepth += 1;
 				} else {
-					return [true, ...(Object.hasOwn(curTree, '') ? ['[enter]'] : []), ...(query.length <= curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true) : []), ...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])];
+					return [
+						true,
+						...(Object.hasOwn(curTree, '') ? ['[enter]'] : []),
+						...(query.length <= curDepth ? fzf(Object.keys(curTree).filter(i => i !== '' && i !== '*'), query.at(-1), true) : []), 
+						...(Object.hasOwn(curTree, '*') ? ['[*]'] : [])
+					];
 				}
 			}
 
