@@ -176,7 +176,7 @@
 	</style>
 </head>
 <body>
-	<p id="logo"><b>Q</b>Search <span id="version">v1.7</span></p>
+	<p id="logo"><b>Q</b>Search <span id="version">v1.7.2</span></p>
 	<p id="credits">Made by <span><a class="underlined" href="https://qwkdev.github.io/" target="_blank" aria-label="label">qwk<span class="underline" style="--widen: 5%; --fix: 1%;"></span></a></span></p>
 
 	<input type="text" id="search" placeholder="Search...">
@@ -276,8 +276,10 @@
 			];
 		}
 
-		function resolve(query) {
+		function resolve(query, auto=true) {
 			query = query.toLowerCase().split(' ').filter(i => i !== '');
+			console.log(query);
+			if (!query) return;
 			let curTree = tree;
 			let url;
 
@@ -293,7 +295,7 @@
 				if (typeof curTree === 'string') url = curTree
 				else if (Object.hasOwn(curTree, '')) url = curTree[''];
 			}
-			if (!url) return null;
+			if (!url) return;
 
 			for (let j = 0; j < query.length; j++) {
 				url = url.replace('$'+j, encodeURIComponent(query[j]));
@@ -301,6 +303,7 @@
 			}
 			url = url.replace('$*', encodeURIComponent(query.slice(i).join(' ')));
 			url = url.replace('$.*', query.slice(i).join(' '));
+			if (url && auto) window.location.href = url;
 			return url;
 		}
 	
@@ -346,10 +349,7 @@
 				if (sel !== null) {
 					const r = Array.from(results.querySelectorAll('p')).filter(p => !p.innerText.endsWith(']'));
 					if (r[sel]) complete(r[sel]);
-				} else {
-					let url = resolve(search.value);
-					if (url) window.location.href = url;
-				}
+				} else resolve(search.value);
 			} else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 				const r = Array.from(results.querySelectorAll('p')).filter(p => !p.innerText.endsWith(']'));
 				if (sel !== null) sel = sel + (event.key === 'ArrowDown' ? 1 : -1);
@@ -364,6 +364,8 @@
 				});
 			}
 		});
+
+		const pq = decodeURIComponent(window.location.search.slice(1));
 
 		init([
 			{ // Search 
@@ -611,11 +613,11 @@
 				},
 				"aliexpress": "https://www.aliexpress.com/",
 			}
-		]);
+		]).then(() => { if (!pq.startsWith('-')) resolve(pq); });
 
-		for (const url of [
+		init([
 			'https://scotpapers.com/qsm.json',
-		]) init([url]);
+		]).then(() => resolve(pq.slice(1)));
 	</script>
 </body>
 </html>
