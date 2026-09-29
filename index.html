@@ -365,7 +365,7 @@
 			}
 		});
 
-		const pq = decodeURIComponent(window.location.search.slice(1));
+		const pq = decodeURIComponent(window.location.search.slice(1).replace(/\+/g, ' '));
 
 		init([
 			{ // Search 
