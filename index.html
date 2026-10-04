@@ -366,6 +366,7 @@
 		});
 
 		const pq = decodeURIComponent(window.location.search.slice(1).replace(/\+/g, ' '));
+		if (pq) search.value = pq;
 
 		init([
 			{ // Search 
